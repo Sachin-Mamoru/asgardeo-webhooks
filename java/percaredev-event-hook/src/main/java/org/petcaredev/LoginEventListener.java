@@ -18,7 +18,7 @@ public class LoginEventListener {
         HttpServer server = HttpServer.create(new InetSocketAddress(8000), 0);
 
         // Set a handler for the /login path
-        server.createContext("/login", new LoginEventHandler());
+        server.createContext("/login-event", new LoginEventHandler());
 
         // Start the server
         server.start();
