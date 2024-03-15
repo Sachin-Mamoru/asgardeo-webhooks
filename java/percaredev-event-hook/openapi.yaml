@@ -1,0 +1,26 @@
+openapi: 3.0.0
+info:
+  title: Login Event Listener API
+  description: This API handles login events, including event triggering and notifications.
+  version: "1.0.0"
+paths:
+  /login-event:
+    post:
+      summary: Consumes a login event
+      description: This endpoint is used to consume a login event from asgardeo
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Login event successfully consumed
+          content:
+            text/plain:
+              schema:
+                type: string
+        '400':
+          description: Bad request
+security: []
