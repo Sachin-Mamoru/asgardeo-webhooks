@@ -1,0 +1,1 @@
+web: java -jar target/percaredev-event-hook-1.0-SNAPSHOT.jar
