@@ -24,6 +24,12 @@ public class LoginEventListener {
         server.start();
 
         System.out.println("Server is listening on port 8000/n");
+
+        new ChoreoWebSubHubSubscriber().subscribeToWebSubHub(
+            "https://hub.websubhub.choreo.dev/hub",
+            "petcaredev-LOGINS",
+            "https://d09c399e-0aad-43c3-ae21-b3b53f86368a-dev.e1-us-east-azure.choreoapis.dev/prit/petcaredeveventhookjava/login-event-listener-be2/v1.0/login-event"
+        );
     }
 
     static class LoginEventHandler implements HttpHandler {
