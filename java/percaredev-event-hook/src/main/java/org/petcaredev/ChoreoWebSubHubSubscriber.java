@@ -18,6 +18,7 @@
 
 package org.petcaredev;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -28,9 +29,18 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.github.scribejava.core.builder.ServiceBuilder;
+import com.github.scribejava.core.builder.api.DefaultApi20;
+import com.github.scribejava.core.model.OAuth2AccessToken;
+import com.github.scribejava.core.oauth.OAuth20Service;
+
 public class ChoreoWebSubHubSubscriber {
 
+    private static final String CLIENT_ID = "wVfomEo_qMp_IEwT9viQAjvfY0oa";
+    private static final String CLIENT_SECRET = "SAVfdl9Eub1YELWwyBXnahkwssoa";
+
     public void subscribeToWebSubHub(String hubUrl, String topicUrl, String callbackUrl) {
+
         try {
             HttpClient client = HttpClient.newHttpClient();
 
@@ -39,11 +49,13 @@ public class ChoreoWebSubHubSubscriber {
             data.put("hub.topic", topicUrl);
             data.put("hub.callback", callbackUrl);
 
-            System.out.println("Subscribing to hub: " + hubUrl + " with topic: " + topicUrl + " and callback: " + callbackUrl);
+            System.out.println(
+                    "Subscribing to hub: " + hubUrl + " with topic: " + topicUrl + " and callback: " + callbackUrl);
 
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(hubUrl))
-                    .header("Content-Type", "application/x-www-form-urlencoded")
+                    .setHeader("Authorization", "Bearer " + getAccessToken())
+                    .setHeader("Content-Type", "application/x-www-form-urlencoded")
                     .POST(buildFormDataFromMap(data))
                     .build();
 
@@ -54,7 +66,7 @@ public class ChoreoWebSubHubSubscriber {
 
             // Print headers for debugging
             HttpHeaders headers = response.headers();
-            headers.map().forEach((k,v) -> System.out.println(k + ":" + v));
+            headers.map().forEach((k, v) -> System.out.println(k + ":" + v));
 
         } catch (Exception e) {
             System.out.println("Error while subscribing to hub: " + hubUrl + " message: " + e.getMessage());
@@ -62,6 +74,7 @@ public class ChoreoWebSubHubSubscriber {
     }
 
     private static HttpRequest.BodyPublisher buildFormDataFromMap(Map<Object, Object> data) {
+
         var builder = new StringBuilder();
         for (Map.Entry<Object, Object> entry : data.entrySet()) {
             if (builder.length() > 0) {
@@ -73,5 +86,45 @@ public class ChoreoWebSubHubSubscriber {
         }
         return HttpRequest.BodyPublishers.ofString(builder.toString());
     }
+
+    // implement a method to read response body
+    private String readResponseBody(HttpResponse<String> response) {
+
+        return response.body();
+    }
+
+    // implement a method to get a token from client credential grant and to refresh only once it's expired
+    private String getAccessToken() {
+
+        String accessToken = "";
+        try {
+
+            System.out.println("Retrieving an access token from choreo sts");
+            DefaultApi20 ChoreoSTSApi = new DefaultApi20() {
+                @Override
+                public String getAccessTokenEndpoint() {
+
+                    return "https://sts.choreo.dev/oauth2/token";
+                }
+
+                @Override
+                protected String getAuthorizationBaseUrl() {
+
+                    return "https://sts.choreo.dev/oauth2/authorize";
+                }
+            };
+
+            OAuth20Service service = new ServiceBuilder(CLIENT_ID)
+                    .apiSecret(CLIENT_SECRET).build(ChoreoSTSApi);
+
+            accessToken = service.getAccessTokenClientCredentialsGrant().getAccessToken();
+
+        } catch (Exception e) {
+            System.out.println("Error while retrieving an access token from choreo sts. message: " + e.getMessage());
+        }
+
+        return accessToken;
+    }
+
 }
 
