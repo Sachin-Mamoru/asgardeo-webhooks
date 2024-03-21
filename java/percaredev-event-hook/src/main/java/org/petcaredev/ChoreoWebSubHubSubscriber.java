@@ -59,6 +59,8 @@ public class ChoreoWebSubHubSubscriber {
                     .POST(buildFormDataFromMap(data))
                     .build();
 
+            System.out.println("Request:" + request.toString());
+
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
             // Print status code for debugging
