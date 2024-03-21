@@ -39,6 +39,8 @@ public class ChoreoWebSubHubSubscriber {
             data.put("hub.topic", topicUrl);
             data.put("hub.callback", callbackUrl);
 
+            System.out.println("Subscribing to hub: " + hubUrl + " with topic: " + topicUrl + " and callback: " + callbackUrl);
+
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(hubUrl))
                     .header("Content-Type", "application/x-www-form-urlencoded")
