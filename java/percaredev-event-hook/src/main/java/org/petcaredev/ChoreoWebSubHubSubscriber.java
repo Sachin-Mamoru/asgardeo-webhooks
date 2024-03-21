@@ -55,7 +55,7 @@ public class ChoreoWebSubHubSubscriber {
             headers.map().forEach((k,v) -> System.out.println(k + ":" + v));
 
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("Error while subscribing to hub: " + hubUrl + " message: " + e.getMessage());
         }
     }
 
