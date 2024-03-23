@@ -23,4 +23,35 @@ paths:
                 type: string
         '400':
           description: Bad request
+    get:
+      summary: Verifies websubhub subscription
+      description: This endpoint is used to verify websubhub subscription
+      parameters:
+        - name: hub.mode
+          in: query
+          content:
+            text/plain:
+              schema:
+                type: string
+        - name: hub.topic
+          in: query
+          content:
+            text/plain:
+              schema:
+                type: string
+        - name: hub.challenge
+          in: query
+          content:
+            text/plain:
+              schema:
+                type: string
+      responses:
+        '200':
+          description: subscription validation is success
+          content:
+            text/plain:
+              schema:
+                type: string
+        '404':
+          description: Bad request
 security: []
