@@ -45,8 +45,7 @@ public class LoginEventListener {
         public void handle(HttpExchange exchange) throws IOException {
 
             System.out.println("Received a request." + "Method: " + exchange.getRequestMethod() + " Path: " +
-                    exchange.getRequestURI().getPath() + " Query: " + exchange.getRequestURI().getQuery() +
-                    " Headers: " + exchange.getRequestHeaders() + " Body: " + exchange.getRequestBody());
+                    exchange.getRequestURI().getPath() + " Query: " + exchange.getRequestURI().getQuery());
             // Check if this is a GET request or a POST request
             if (exchange.getRequestMethod().equals("GET")) {
 
@@ -69,6 +68,7 @@ public class LoginEventListener {
                         exchange.sendResponseHeaders(200, hubChallenge.length());
                         exchange.getResponseBody().write(hubChallenge.getBytes());
                         exchange.close();
+                        System.out.println("Successfully validated subscription to the hub.");
                         return;
                     }
                 }
@@ -76,6 +76,7 @@ public class LoginEventListener {
                 exchange.sendResponseHeaders(404, hubChallenge.length());
                 exchange.getResponseBody().write(hubChallenge.getBytes());
                 exchange.close();
+                System.out.println("Subscription validation is denied.");
                 return;
             }
 
