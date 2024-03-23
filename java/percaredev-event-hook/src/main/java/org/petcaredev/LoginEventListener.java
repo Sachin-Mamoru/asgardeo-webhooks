@@ -41,7 +41,7 @@ public class LoginEventListener {
         @Override
         public void handle(HttpExchange exchange) throws IOException {
             // Check if this is a GET request or a POST request
-            if (!exchange.getRequestMethod().equals("GET")) {
+            if (exchange.getRequestMethod().equals("GET")) {
 
                 URI requestURI = exchange.getRequestURI();
                 String query = requestURI.getQuery();
@@ -84,7 +84,7 @@ public class LoginEventListener {
             System.out.println(body.toString());
 
             // Send a response
-            String response = "Received";
+            String response = "Event Received";
             exchange.sendResponseHeaders(200, response.length());
             exchange.getResponseBody().write(response.getBytes());
             exchange.close();
